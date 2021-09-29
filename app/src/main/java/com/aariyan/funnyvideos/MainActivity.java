@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,57 +59,8 @@ import java.util.List;
 
 public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
-    private void addVideos() {
-        // We will add all videos here
+    int[] addPosition = {0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60};
 
-        //Video Details Here Here
-        hashMap = new HashMap<>();
-        hashMap.put("vdo_id", "upHtrn4_4fw");
-        hashMap.put("vdo_title", "Allah di kasam tu mainu enna pyara ho gaya");
-        hashMap.put("vdo_desciption", "Teri har cheez jannat ae -hasna vi jannt ae");
-        arrayList.add(hashMap);
-        //------------->>>>>>>>>>>>>>>>>
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("vdo_id", "aNcxgxHcGYg");
-        hashMap.put("vdo_title", "Heer - Full Song | Jab Tak Hai Jaan");
-        hashMap.put("vdo_desciption", "Shah Rukh Khan | Katrina Kaif | Harshdeep Kaur | A. R.");
-        arrayList.add(hashMap);
-        //------------->>>>>>>>>>>>>>>>>
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("vdo_id", "m8cMzbs9-i8");
-        hashMap.put("vdo_title", "Khoma Koro Ami Valo Nei");
-        hashMap.put("vdo_desciption", "ক্ষমা করো আমি ভালো নেই | Bangla Lyrics | Dev | Anupam Ray | Sad Song 2021");
-        arrayList.add(hashMap);
-        //------------->>>>>>>>>>>>>>>>>
-
-
-        hashMap = new HashMap<>();
-        hashMap.put("vdo_id", "Gi050faPB3I");
-        hashMap.put("vdo_title", "Zero 2 Hero in Android (Season 1)");
-        hashMap.put("vdo_desciption", "I have become one of the rare people who dont know how to quit!");
-        arrayList.add(hashMap);
-
-
-        //------------->>>>>>>>>>>>>>>>>
-        hashMap = new HashMap<>();
-        hashMap.put("vdo_id", "HWjQGO_tjSI");
-        hashMap.put("vdo_title", "Motivational Lines You Must Listen");
-        hashMap.put("vdo_desciption", "Best Motivational Audio Compilation | Reprogram Your Mind");
-        arrayList.add(hashMap);
-
-
-    }
-
-    //=======================================================
-    //====================================================================
-    //====================================================================
-
-    //    TextView tvDate;
-//    LinearLayout layoutContainer;
     FloatingActionButton fabButton;
     RelativeLayout _rootLay;
     //AdView mAdView;
@@ -206,7 +158,7 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        "Check "+getString(R.string.app_name)+" app ♥ It's awesome! \n" + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID);
+                        "Check " + getString(R.string.app_name) + " app ♥ It's awesome! \n" + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID);
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
 
@@ -302,6 +254,7 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
         adLoader.loadAd(new AdRequest.Builder().build());
     }
+
     private void makeListView(String type) {
 
         if (type.equals("All")) {
@@ -348,8 +301,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                         if (videoList.size() == 0) {
                             Toast.makeText(MainActivity.this, "No Data Found!", Toast.LENGTH_SHORT).show();
                         }
-                        Collections.sort(videoList);
-                        createDummyList( videoList);
+                        Collections.sort(videoList, Collections.reverseOrder());
+                        createDummyList(videoList);
                         Adapter adapter = new Adapter(MainActivity.this, videoList);
                         recyclerView.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
@@ -378,7 +331,15 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                 "",
                 ""
         );
-        videoList.add(0,model);
+        //videoList.add(0, model);
+
+        int size = videoList.size();
+        for (int i = 0; i < addPosition.length; i++) {
+            if (size >= addPosition[i]) {
+                videoList.add(addPosition[i], model);
+            }
+        }
+
     }
 
 
@@ -501,6 +462,7 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             if (position != 0) {
                 holder.title.setText(model.getVideoName());
                 holder.description.setText(model.getVideoDescription());
+                holder.totalViews.setText(model.getTotalViews()+" Views");
 
                 // Youtube thumnail link is like
                 //https://i.ytimg.com/vi/<VIDEO ID>/0.jpg
@@ -514,15 +476,22 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                     @Override
                     public void onClick(View v) {
                         PLAYING_NOW = position;
-                        playVideo(model.getVideoUrl());
+                        playVideo(model.getVideoUrl(),model.getId(),model.getTotalViews());
 
                         showInterstitial();
                     }
                 });
             }
 
-
-            if (position == 0) {
+            if (position == addPosition[0] || position == addPosition[1] || position == addPosition[2]
+                    || position == addPosition[3] || position == addPosition[4]
+                    || position == addPosition[5] || position == addPosition[6]
+                    || position == addPosition[7] || position == addPosition[8]
+                    || position == addPosition[9] || position == addPosition[10]
+                    || position == addPosition[11] || position == addPosition[12]
+                    || position == addPosition[13] || position == addPosition[14]
+                    || position == addPosition[15]
+            ) {
                 holder.templateView.setVisibility(View.VISIBLE);
                 holder.layItem.setVisibility(View.GONE);
                 showNativeAds(holder);
@@ -530,8 +499,9 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                 holder.templateView.setVisibility(View.GONE);
                 holder.layItem.setVisibility(View.VISIBLE);
             }
-        }
 
+
+        }
 
 
         @Override
@@ -543,6 +513,7 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             private TextView title, description;
             private ImageView thumbnailImage;
             private RelativeLayout layItem;
+            private TextView totalViews;
 
             private TemplateView templateView;
 
@@ -553,6 +524,7 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                 description = convertView.findViewById(R.id.tvDescription);
                 thumbnailImage = convertView.findViewById(R.id.imgThumb);
                 layItem = convertView.findViewById(R.id.layItem);
+                totalViews = convertView.findViewById(R.id.totalViews);
 
                 templateView = convertView.findViewById(R.id.templateView);
             }
@@ -560,10 +532,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     }
 
 
-
-
     //================================================
-    private void playVideo(String video_id) {
+    private void playVideo(String video_id,String id,String totalViews) {
 
         if (myYoutubePlayer != null) {
             layPlayer.setVisibility(View.VISIBLE);
@@ -574,6 +544,14 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         } else {
             Toast.makeText(MainActivity.this, "Please wait...", Toast.LENGTH_LONG).show();
         }
+
+        //Updating count
+        if (!totalViews.equals("")) {
+            int count = Integer.parseInt(totalViews);
+            count++;
+            videoRef.child(id).child("totalViews").setValue(""+count);
+        }
+
     }
 
     //================================================
@@ -695,7 +673,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         //HashMap<String, String> hashMap = arrayList.get(PLAYING_NOW);
         //String vdo_id = hashMap.get("vdo_id");
         //playVideo(vdo_id);
-        playVideo(model.getVideoUrl());
+        //playVideo(model.getVideoUrl());
+        playVideo(model.getVideoUrl(),model.getId(),model.getTotalViews());
     }
 
 
@@ -710,7 +689,8 @@ public class MainActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             //HashMap<String, String> hashMap = arrayList.get(PLAYING_NOW);
             //String vdo_id = hashMap.get("vdo_id");
             //playVideo(vdo_id);
-            playVideo(model.getVideoUrl());
+           // playVideo(model.getVideoUrl());
+            playVideo(model.getVideoUrl(),model.getId(),model.getTotalViews());
         } else {
             Toast.makeText(MainActivity.this, "Playing the first video", Toast.LENGTH_LONG).show();
         }

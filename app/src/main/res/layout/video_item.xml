@@ -65,6 +65,8 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+
+
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
@@ -75,6 +77,17 @@
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/totalViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:text="2500 Views"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/purple_200"
+                    android:textSize="16sp"
+                    android:textStyle="bold|italic" />
 
             </LinearLayout>
 
